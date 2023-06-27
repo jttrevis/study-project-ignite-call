@@ -1,31 +1,31 @@
-import React, { useEffect } from "react";
-import { Container, Form, FormError, Header } from "./styles";
-import { Button, Heading, MultiStep, Text, TextInput } from "@ignite-ui/react";
-import { ArrowRight } from "phosphor-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/router";
-import { api } from "@/lib/axios";
-import { AxiosError } from "axios";
+import React, { useEffect } from 'react'
+import { Container, Form, FormError, Header } from './styles'
+import { Button, Heading, MultiStep, Text, TextInput } from '@ignite-ui/react'
+import { ArrowRight } from 'phosphor-react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/router'
+import { api } from '@/lib/axios'
+import { AxiosError } from 'axios'
 
 const registerFormSchema = z.object({
   username: z
     .string()
     .min(3, {
-      message: "O Usuario precisa ter no minimo 3 caracteres",
+      message: 'O Usuario precisa ter no minimo 3 caracteres',
     })
     .regex(/^([a-z\\-]+)$/i, {
-      message: "O usuario pode ter apenas letras e hifens",
+      message: 'O usuario pode ter apenas letras e hifens',
     })
     .transform((username) => username.toLowerCase()),
 
   name: z.string().min(3, {
-    message: "O nome precisa ter no minimo 3 caracteres",
+    message: 'O nome precisa ter no minimo 3 caracteres',
   }),
-});
+})
 
-type RegisterFormData = z.infer<typeof registerFormSchema>;
+type RegisterFormData = z.infer<typeof registerFormSchema>
 
 export default function Register() {
   const {
@@ -36,37 +36,39 @@ export default function Register() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
-      username: "username",
+      username: 'username',
     },
-  });
+  })
 
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     if (router.query.username) {
-      setValue("username", String(router.query.username));
+      setValue('username', String(router.query.username))
     }
-  }, [router.query?.username, setValue]);
+  }, [router.query?.username, setValue])
 
   const handleRegister = async (data: RegisterFormData) => {
     try {
-      await api.post("/users", {
+      await api.post('/users', {
         username: data.username,
         name: data.name,
-      });
+      })
+
+      await router.push('/register/connect-calendar')
     } catch (error) {
       if (error instanceof AxiosError && error?.response?.data?.message) {
-        alert(error.response.data.message);
-        return;
+        alert(error.response.data.message)
+        return
       }
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   return (
     <Container>
       <Header>
-        <Heading as={"strong"}>Bem-vindo ao Ignite Call!</Heading>
+        <Heading as={'strong'}>Bem-vindo ao Ignite Call!</Heading>
 
         <Text>
           Precisamos de algumas informações para criar seu perfil! Ah, você pode
@@ -76,25 +78,25 @@ export default function Register() {
         <MultiStep size={4} currentStep={1} />
       </Header>
 
-      <Form as={"form"} onSubmit={handleSubmit(handleRegister)}>
+      <Form as={'form'} onSubmit={handleSubmit(handleRegister)}>
         <label htmlFor="">
           <Text>Nome do usario</Text>
           <TextInput
-            {...register("username")}
+            {...register('username')}
             prefix="ignite.com/"
             placeholder="seu-usuario"
           />
         </label>
         {errors.username && (
-          <FormError size={"sm"}>{errors.username.message}</FormError>
+          <FormError size={'sm'}>{errors.username.message}</FormError>
         )}
 
         <label>
           <Text>Nome completo</Text>
-          <TextInput {...register("name")} placeholder="seu-nome" />
+          <TextInput {...register('name')} placeholder="seu-nome" />
         </label>
         {errors.name && (
-          <FormError size={"sm"}>{errors.name.message}</FormError>
+          <FormError size={'sm'}>{errors.name.message}</FormError>
         )}
 
         <Button type="submit" disabled={isSubmitting}>
@@ -103,5 +105,5 @@ export default function Register() {
         </Button>
       </Form>
     </Container>
-  );
+  )
 }
