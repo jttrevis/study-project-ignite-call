@@ -33,24 +33,27 @@ export default function Register() {
       <ConnectBox>
         <ConnectItem>
           <Text>Google calendar</Text>
-          {
-            isSignedIn ? (
-              <Button disabled>
-                Conectado
-                <Check size={'small'}/>
-              </Button>
-            ) : (
-              <Button onClick={handleConnectToCalendar} size={'sm'} variant={'secondary'}>
+          {isSignedIn ? (
+            <Button disabled>
+              Conectado
+              <Check size={'small'} />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleConnectToCalendar}
+              size={'sm'}
+              variant={'secondary'}
+            >
               Conectar
               <ArrowRight />
             </Button>
-            )
-          }
+          )}
         </ConnectItem>
 
         {hasAuthError && (
           <AuthError size={'sm'}>
-            Falha ao se conectar ao Google, verifique se voce habilitou as permissoes de acesso ao Google Calendar.
+            Falha ao se conectar ao Google, verifique se voce habilitou as
+            permissoes de acesso ao Google Calendar.
           </AuthError>
         )}
 

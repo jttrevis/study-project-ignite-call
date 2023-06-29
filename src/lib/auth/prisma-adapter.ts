@@ -1,15 +1,17 @@
-import { Adapter } from "next-auth/adapters";
-import { prisma } from "../prisma";
-import { NextApiRequest, NextApiResponse } from "next";
-import { parseCookies, destroyCookie } from "nookies";
+import { Adapter } from 'next-auth/adapters'
+import { prisma } from '../prisma'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { parseCookies, destroyCookie } from 'nookies'
 
-
-export function PrismaAdapter(req: NextApiRequest, res: NextApiResponse): Adapter {
+export function PrismaAdapter(
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Adapter {
   return {
     async createUser(user) {
       const { '@ignitecall:userId': userIdOnCookies } = parseCookies({ req })
 
-      if(!userIdOnCookies) {
+      if (!userIdOnCookies) {
         throw new Error('User ID not found in cookies.')
       }
 
@@ -22,11 +24,11 @@ export function PrismaAdapter(req: NextApiRequest, res: NextApiResponse): Adapte
           name: user.name,
           email: user.email,
           avatarUrl: user.avatarUrl,
-        }
+        },
       })
 
-      destroyCookie({ res } , '@ignitecall:userId', {
-        path: '/'
+      destroyCookie({ res }, '@ignitecall:userId', {
+        path: '/',
       })
 
       return {
@@ -222,7 +224,5 @@ export function PrismaAdapter(req: NextApiRequest, res: NextApiResponse): Adapte
         },
       })
     },
-
-   
   }
 }
